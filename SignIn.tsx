@@ -1,23 +1,135 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import axios from 'axios';
 
-export default function SignIn() {
+export default function FoodByteLogin({ navigation }: any) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = () => {
+    axios.post('https://foodbyte.pythonanywhere.com/login/', {
+      email: email,
+      password: password,
+    })
+    .then(response => {
+      Alert.alert('Success', 'Logged in successfully');
+      navigation.navigate('Home');  // Navigate to Home screen
+    })
+    .catch(error => {
+      Alert.alert('Error', 'Login failed: ' + (error.response ? error.response.data : error.message));
+    });
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Sign In</Text>
-    </View>
+    <LinearGradient colors={['#F40F0F', '#800080']} style={styles.container}>
+      <View style={styles.contentWrapper}>
+        <View style={styles.logoContainer}>
+          <Image source={require('./logo.png')} style={styles.logo} />
+          <Text style={styles.logoText}>food byte</Text>
+          <Text style={styles.tagline}>Delivering flavor, one byte at a time</Text>
+        </View>
+        
+        <View style={styles.formContainer}>
+          <Text style={styles.title}>Login</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor="#000000"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="#000000"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
+          
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+          
+          <Text style={styles.signInText}>
+            New here? <Text style={styles.signInLink} onPress={() => navigation.navigate('SignUp')}>sign up</Text>
+          </Text>
+        </View>
+      </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',  // Black background
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderRadius: 30,
   },
-  text: {
-    fontSize: 30,
-    color: '#FFFFFF',  // White text
+  contentWrapper: {
+    flex: 1,
+    justifyContent: 'space-between',
+    padding: 35,
+    paddingBottom: 190,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginTop: 90,
+  },
+  logo: {
+    width: 89,
+    height: 68,
+    marginBottom: 10,
+  },
+  logoText: {
+    fontWeight: 'bold',
+    fontSize: 36,
+    color: '#1F0D85',
+  },
+  tagline: {
+    fontSize: 14,
+    color: '#1F0D85',
+  },
+  formContainer: {
+    backgroundColor: '#D9D9D9',
+    borderRadius: 40,
+    padding: 20,
+    width: '100%',
+    marginTop: 40,
+  },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: '#000000',
+    marginBottom: 20,
+  },
+  input: {
+    fontSize: 20,
+    color: '#000000',
+    backgroundColor: 'rgba(133, 129, 125, 0.51)',
+    borderRadius: 40,
+    padding: 10,
+    marginBottom: 15,
+  },
+  button: {
+    backgroundColor: '#FFA500',
+    borderRadius: 40,
+    padding: 15,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: '#000000',
+  },
+  signInText: {
+    fontSize: 16,
+    color: '#000000',
+    textAlign: 'center',
+    marginTop: 15,
+  },
+  signInLink: {
+    fontWeight: 'bold',
   },
 });

@@ -75,7 +75,7 @@ export default function FoodByteSignUp({ navigation }: any) {
           </TouchableOpacity>
           
           <Text style={styles.signInText}>
-            Already a user? <Text style={styles.signInLink}>sign in</Text>
+            Already a user? <Text style={styles.signInLink} onPress={() => navigation.navigate('SignIn')}>sign in</Text>
           </Text>
         </View>
       </View>
